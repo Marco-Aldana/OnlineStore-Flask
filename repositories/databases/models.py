@@ -17,32 +17,49 @@ users_table = Table("users", metadata,
                     Column("email", Text, nullable=False),
                     Column("password", Text, nullable=False),
                     Column("image", Text, nullable=True),
-                    Column("phone", NVARCHAR(10), nullable=True),
-                    Column("country", Text, nullable=True, default=""),
-                    Column("city", Text, nullable=True, default=""),
-                    Column("postal_code", Text, nullable=True, default=""),
-                    Column("street", Text, nullable=True, default=""),
-                    Column("number", Text, nullable=True, default=""),
                     Column("is_active", Boolean, default=True, nullable=False),
                     Column("is_validated", Boolean, default=False, nullable=False),
                     Column("created_at", DATETIME, default=datetime.datetime.now(), nullable=False),
                     )
 
+contacts_table = Table("contacts", metadata,
+                       Column("id", Integer, primary_key=True, autoincrement=True),
+                       Column("id_user", ForeignKey('user.id'), nullable=False),
+                       Column("phone", NVARCHAR(10), nullable=True),
+                       Column("country", Text, nullable=True, default=""),
+                       Column("city", Text, nullable=True, default=""),
+                       Column("zipcode", Text, nullable=True, default=""),
+                       Column("street", Text, nullable=True, default=""),
+                       Column("number", Text, nullable=True, default=""),
+                       )
+
 products_table = Table("products", metadata,
                        Column("id", Integer, primary_key=True, autoincrement=True),
                        Column("title", String(50), nullable=False),
-                       Column("description", String(50), nullable=False),
+                       Column("price", Integer, default=0, nullable=False),
+                       Column("description", Text, nullable=False),
                        Column("image", String(50), nullable=False),
                        Column("category", String(50), nullable=False),
                        Column("quantity", Integer, default=0, nullable=False),
-                       Column("price", Integer, default=0, nullable=False),
                        )
 
-cart_table = Table("carts", metadata,
-                   Column("id", Integer, primary_key=True, autoincrement=True),
-                   Column("user_id", ForeignKey('users.id'), nullable=False),
-                   Column("date", Text, nullable=False),
-                   )
+categories_products_table = Table("categories_products", metadata,
+                                  Column("id", Integer, primary_key=True, autoincrement=True),
+                                  Column("category", ForeignKey('categories.id')),
+                                  Column("product", ForeignKey('products.id'))
+                                  )
+
+categories_table = Table("categories", metadata,
+                         Column("id", Integer, primary_key=True, autoincrement=True),
+                         Column("title", String(50), nullable=False),
+                         Column("description", Text, nullable=False),
+                         )
+
+carts_table = Table("carts", metadata,
+                    Column("id", Integer, primary_key=True, autoincrement=True),
+                    Column("user_id", ForeignKey('users.id'), nullable=False),
+                    Column("date", Text, nullable=False),
+                    )
 
 to_sell_table = Table("to_sell", metadata,
                       Column("id", Integer, primary_key=True, autoincrement=True),
@@ -51,10 +68,10 @@ to_sell_table = Table("to_sell", metadata,
                       Column("quantity", Integer, nullable=False),
                       )
 
-audits_table = Table("AUDITS", metadata,
-                     Column("IdAudit", Integer, primary_key=True, autoincrement=True),
-                     Column("Request", Text, nullable=False),
-                     Column("Time", DateTime, nullable=False),
-                     Column("IdSession", Text, nullable=False),
-                     Column("Status", Text, nullable=False)
+audits_table = Table("audits", metadata,
+                     Column("id_audit", Integer, primary_key=True, autoincrement=True),
+                     Column("request", Text, nullable=False),
+                     Column("time", DateTime, nullable=False),
+                     Column("id_session", Text, nullable=False),
+                     Column("status", Text, nullable=False)
                      )
