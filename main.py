@@ -1,14 +1,20 @@
-from flask import Flask, current_app, flash, jsonify, make_response, redirect, request, url_for
-from werkzeug import Response
-from werkzeug.exceptions import HTTPException
+from flask import Flask, jsonify
+
+from configuration.database_connect import database_connection_alchemy, init_database
 
 app = Flask(__name__)
 
+with app.app_context():  # To set tables in database
+    database_connection_alchemy()
+    init_database()
 
 @app.route("/")
 def index():
-    return "Hello world!!"
+    return jsonify({"message": "Hello world!!"})
 
+@app.before_first_request
+def initialize():
+    pass
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -16,5 +22,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
+    app.run(debug=True, host='127.0.0.1')

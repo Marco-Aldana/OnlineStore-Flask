@@ -12,9 +12,9 @@ metadata = MetaData()
 # -----------------------------------------------------------------------Declaring tables details for Database structure
 users_table = Table("users", metadata,
                     Column("id", Integer, primary_key=True, autoincrement=True),
-                    Column("username", String(20), nullable=False),
+                    Column("username", String(20), unique=True, nullable=False),
                     Column("full_name", Text, nullable=False),
-                    Column("email", Text, nullable=False),
+                    Column("email", String(70), unique=True, nullable=False),
                     Column("password", Text, nullable=False),
                     Column("image", Text, nullable=True),
                     Column("is_active", Boolean, default=True, nullable=False),
@@ -24,7 +24,7 @@ users_table = Table("users", metadata,
 
 contacts_table = Table("contacts", metadata,
                        Column("id", Integer, primary_key=True, autoincrement=True),
-                       Column("id_user", ForeignKey('user.id'), nullable=False),
+                       Column("id_user", ForeignKey('users.id'), nullable=False),
                        Column("phone", NVARCHAR(10), nullable=True),
                        Column("country", Text, nullable=True, default=""),
                        Column("city", Text, nullable=True, default=""),
@@ -35,7 +35,7 @@ contacts_table = Table("contacts", metadata,
 
 products_table = Table("products", metadata,
                        Column("id", Integer, primary_key=True, autoincrement=True),
-                       Column("title", String(50), nullable=False),
+                       Column("title", String(50), unique=True, nullable=False),
                        Column("price", Integer, default=0, nullable=False),
                        Column("description", Text, nullable=False),
                        Column("image", String(50), nullable=False),
@@ -51,7 +51,7 @@ categories_products_table = Table("categories_products", metadata,
 
 categories_table = Table("categories", metadata,
                          Column("id", Integer, primary_key=True, autoincrement=True),
-                         Column("title", String(50), nullable=False),
+                         Column("title", String(50), unique=True, nullable=False),
                          Column("description", Text, nullable=False),
                          )
 
