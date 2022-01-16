@@ -12,28 +12,31 @@ app_connexion.add_api("openapi.yml")
 # Flow routes ----------------------------------------------------------------------------------------------------------
 @app.before_request
 def before_request():
-    print("starting request--------------------------------------------------")
+    pass
 
 
 @app.after_request
 def after_request(response):
-    print("finalizing request--------------------------------------------------")
     return response
 
 
 @app.teardown_request
 def teardown_request(error):
-    print("teardown request--------------------------------------------------")
     if error:
         print("closing request with server error...")
 
 
 # Error routes ---------------------------------------------------------------------------------------------------------
-@app.errorhandler(404)
-def page_not_found(e):
-    return jsonify({'errorCode': 404, 'message': 'Route not found'})
-
-
 @app.errorhandler(500)
 def page_not_found(e):
-    return jsonify({'errorCode': 500, 'message': 'Internal server error'})
+    return jsonify({"Request Failed": [{"Status code": 500}, {'Details': f'{e}'}]})
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"Request Failed": [{"Status code": 404}, {'Details': f'{e}'}]})
+
+
+@app.errorhandler(409)
+def page_not_found(e):
+    return jsonify({"Request Failed": [{"Status code": 409}, {'Details': f'{e}'}]})

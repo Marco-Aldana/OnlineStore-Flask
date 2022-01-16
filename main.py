@@ -1,5 +1,5 @@
 from project import app
-from setup_project import setup_database
+from project.setup_project import setup_database
 
 
 if __name__ == '__main__':

@@ -1,21 +1,15 @@
-import datetime
-
-from flask import g
-from sqlalchemy.orm import Session
-from flask import request, jsonify
-from sqlalchemy import select
-from marshmallow import ValidationError
+from flask import abort
 
 from .. import db
 from ..schemas.database_models import UsersTable
-from ..schemas.user_models import UserCreateRequestSchema, UserResponseSchema
+from ..schemas.user_models import UserCreateRequestSchema
 
 
 def create_user_repository(user_data: UserCreateRequestSchema()):
-    user = UsersTable.query.get(1)
-
-    if user:
-        return user.__repr__()
+    if UsersTable.query.filter_by(username=user_data['username']).first():
+        abort(409, description="Username in use")
+    if UsersTable.query.filter_by(email=user_data['email']).first():
+        abort(409, description="Email in Use")
 
     user = UsersTable(
         username=user_data['username'],
@@ -25,52 +19,35 @@ def create_user_repository(user_data: UserCreateRequestSchema()):
     )
     db.session.add(user)
     db.session.commit()
-
-    return user.__repr__()
-
-
-"""    user["id"] = 1
-    user["image"] = "no image"
-    user["dummy"] = 33
-    user["is_active"] = True
-    user["is_validated"] = False
-    user["created_at"] = datetime.datetime.now()
-
-    with g.engine.begin() as connection:
-        search_username = connection.execute(select([users_table]).where(users_table.c.username == user["username"]))
-        exist_username=search_username.fetchall()
-
-        if exist_username:
-            raise ValidationError("the username exists")
-
-        search_email = connection.execute(select([users_table]).where(users_table.c.email == user["email"]))
-        exist_email = search_email.fetchall()
-
-        if exist_email:
-            raise ValidationError("the email exists")
-
-        _query = users_table.insert().values(
-            username=user["username"],
-            password=user["password"],
-            email=user["email"],
-            full_name=user["full_name"]
-        )
-        result=connection.execute(_query)
-        result=result.fetchall()
-        session = Session(g.engine)
-        session.commit()
-        print("----------------------------------------------------------------------------------")
-        print(result)
-        print("----------------------------------------------------------------------------------")
-        session.close()
-
     return user
-"""
 
-""" with g.engine.begin() as connection:
-        sql_request = users_table.insert().values()
-        sql_result = connection.execute(sql_request)
-        session = Session(g.engine)
-        session.commit()
-        session.close()
-        response = sql_result.fetchall()"""
+
+def get_user_by_id_repository(id_user):
+    user = UsersTable.query.get(id_user)
+    if user:
+        return user
+    else:
+        abort(404, description="User not found")
+
+
+def get_users_repository():
+    users_list = UsersTable.query.all()
+    return users_list
+
+
+def edit_user_repository(id_user, parameters):
+    user = get_user_by_id_repository(id_user)  # calling the user
+    #TODO validate username and email is not in use
+    for parameter in parameters:
+        #TODO validate parameters
+        user.__setattr__(parameter.get('attribute'), parameter.get('value'))
+        print(f'{parameter.get("attribute")} was requested to modified')
+    db.session.merge(user)
+    db.session.commit()
+    return user
+
+def delete_user_repository(id_user):
+    user = get_user_by_id_repository(id_user)  # calling the user
+    db.session.delete(user)
+    db.session.commit()
+    return user

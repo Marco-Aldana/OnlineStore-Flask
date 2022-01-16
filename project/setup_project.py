@@ -9,4 +9,4 @@ def setup_database():
     engine = create_engine(SQLALCHEMY_DATABASE_URI)
     if not database_exists(engine.url):
         create_database(engine.url)
-    db.create_all()
+        db.create_all()

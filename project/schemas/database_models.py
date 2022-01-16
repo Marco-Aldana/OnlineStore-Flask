@@ -8,7 +8,15 @@ from project import db
 
 
 # -----------------------------------------------------------------------Declaring tables details for Database structure
-class ProductsTable(db.Model):
+class BaseTable:
+    @classmethod
+    def get_attributes(cls):
+        attr = UsersTable.__dict__.keys()
+        attributes_list = [a for a in attr if a[0] != '_' and a != 'id']
+        return attributes_list
+
+
+class ProductsTable(db.Model, BaseTable):
     __tablename__ = 'products'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
@@ -27,10 +35,18 @@ class ProductsTable(db.Model):
         self.quantity = quantity
 
     def __repr__(self):
-        return f"<Product id:{self.id}, title:{self.title},price:{self.price},description:{self.description}>"
+        return {
+            'id': self.id,
+            'title': self.title,
+            'price': self.price,
+            'description': self.description,
+            'image': self.image,
+            'category': self.category,
+            'quantity': self.quantity
+        }
 
 
-class UsersTable(db.Model):
+class UsersTable(db.Model, BaseTable):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -54,10 +70,16 @@ class UsersTable(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Product id:{self.id}, username:{self.username},fullname:{self.full_name},email:{self.email}>"
+        return {
+            'id': self.id,
+            'username': self.username,
+            'full_name': self.full_name,
+            'email': self.email,
+            'image': self.image,
+        }
 
 
-class ContactsTable(db.Model):
+class ContactsTable(db.Model, BaseTable):
     __tablename__ = "contacts"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_user = db.Column(db.ForeignKey('users.id'), nullable=False)
@@ -78,10 +100,19 @@ class ContactsTable(db.Model):
         self.number = number
 
     def __repr__(self):
-        return f"<Product phone: {self.phone}>"
+        return {
+            'id': self.id,
+            'id_user': self.id_user,
+            'phone': self.phone,
+            'country': self.country,
+            'city': self.city,
+            'zipcode': self.zipcode,
+            'street': self.street,
+            'number': self.number
+        }
 
 
-class CategoriesProductsTable(db.Model):
+class CategoriesProductsTable(db.Model, BaseTable):
     __tablename__ = "categories_products"
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.ForeignKey('categories.id'))
@@ -92,10 +123,14 @@ class CategoriesProductsTable(db.Model):
         self.product = product
 
     def __repr__(self):
-        return f"<Product category: {self.category} product: {self.product}>"
+        return {
+            'id': self.id,
+            'category': self.category,
+            'product': self.product
+        }
 
 
-class CategoriesTable(db.Model):
+class CategoriesTable(db.Model, BaseTable):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
@@ -106,10 +141,14 @@ class CategoriesTable(db.Model):
         self.description = description
 
     def __repr__(self):
-        return f"<Product title: {self.title} description: {self.description}>"
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description
+        }
 
 
-class CartsTable(db.Model):
+class CartsTable(db.Model, BaseTable):
     __tablename__ = "carts"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey('users.id'), nullable=False)
@@ -120,10 +159,14 @@ class CartsTable(db.Model):
         self.date = date
 
     def __repr__(self):
-        return f"<Product user_id: {self.user_id} date: {self.date}>"
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'date': self.date,
+        }
 
 
-class ToSellTable(db.Model):
+class ToSellTable(db.Model, BaseTable):
     __tablename__ = "to_sell"
     id = db.Column(db.Integer, primary_key=True)
     id_cart = db.Column(db.ForeignKey('carts.id'), nullable=False)
@@ -136,10 +179,15 @@ class ToSellTable(db.Model):
         self.quantity = quantity
 
     def __repr__(self):
-        return f"<Product id_cart: {self.id_cart} id_product: {self.id_product} quantity:{self.quantity}>"
+        return {
+            'id': self.id,
+            'id_cart': self.id_cart,
+            'id_product': self.id_product,
+            'quantity': self.quantity,
+        }
 
 
-class AuditsTable(db.Model):
+class AuditsTable(db.Model, BaseTable):
     __tablename__ = "audits"
     id = db.Column(db.Integer, primary_key=True)
     request = db.Column(db.Text, nullable=False)
@@ -154,4 +202,10 @@ class AuditsTable(db.Model):
         self.status = status
 
     def __repr__(self):
-        return f"<Product request: {self.request} time: {self.time} id_session:{self.id_session}  status: {self.status}>"
+        return {
+            'id': self.id,
+            'request': self.request,
+            'time': self.time,
+            'id_session': self.id_session,
+            'status': self.status,
+        }
