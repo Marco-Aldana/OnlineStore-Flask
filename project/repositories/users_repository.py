@@ -11,14 +11,13 @@ from ..schemas.database_models import UsersTable
 from ..schemas.user_models import UserCreateRequestSchema, UserResponseSchema
 
 
-
 def create_user_repository(user_data: UserCreateRequestSchema()):
-    user=UsersTable.query.get(user_data[""])
+    user = UsersTable.query.get(1)
 
     if user:
         return user.__repr__()
 
-    user= UsersTable(
+    user = UsersTable(
         username=user_data['username'],
         full_name=user_data['full_name'],
         email=user_data['email'],
@@ -28,7 +27,6 @@ def create_user_repository(user_data: UserCreateRequestSchema()):
     db.session.commit()
 
     return user.__repr__()
-
 
 
 """    user["id"] = 1
