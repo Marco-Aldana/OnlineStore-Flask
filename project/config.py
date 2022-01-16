@@ -1,0 +1,16 @@
+DEBUG = True
+HOST = '127.0.0.1'
+PORT = 5000
+
+SECRET_KEY = 'secret_key'
+
+SQL_SERVER = 'localhost'
+SQL_DB = 'online_shop'
+SQL_USER = 'root'
+SQL_PASSWORD = 'Admin'
+SQL_PORT = 3306
+SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{SQL_USER}:{SQL_PASSWORD}@{SQL_SERVER}/{SQL_DB}"
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+USERNAME = 'User'
+PASSWORD = 'Pass1234'

@@ -1,0 +1,117 @@
+openapi: "3.0.1"
+info:
+  title: "Online Store"
+  description: "This is a online store"
+  version: "0.0.1"
+servers:
+  - url: "http://localhost:5000/"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+    UserList:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+paths:
+
+  /users:
+    get:
+      tags:
+        - "Users"
+      summary: "Method to get a list of users"
+      description: "Method to get a list of players.... bla bla"
+      operationId: "project.routers.users_router.get_users_route"
+      responses:
+        "200":
+          description: "desc"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+
+    post:
+      tags:
+        - "Users"
+      summary: "This is a summary"
+      description: ""
+      operationId: "project.routers.users_router.create_user_route"
+      responses:
+        "200":
+          description: "this is a description"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id_user}:
+    get:
+      tags:
+        - "User"
+      summary: "Gets a user by ID."
+      description: "Users desc"
+      operationId: "project.routers.users_router.get_user_by_id_route"
+      parameters:
+        - in: path
+          name: id_user
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    put:
+      tags:
+        - "User"
+      summary: "Delete a user by ID."
+      description: "Users desc"
+      operationId: "project.routers.users_router.edit_user_route"
+      parameters:
+        - in: path
+          name: id_user
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      tags:
+        - "User"
+      summary: "Delete a user by ID."
+      description: "Users desc"
+      operationId: "project.routers.users_router.delete_user_route"
+      parameters:
+        - in: path
+          name: id_user
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
