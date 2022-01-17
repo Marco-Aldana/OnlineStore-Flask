@@ -2,7 +2,7 @@ from flask import abort
 
 from .. import db
 from ..schemas.database_models import UsersTable
-from ..schemas.user_models import UserCreateRequestSchema
+from ..schemas.user_models import UserCreateRequestSchema, UserParametersSchema
 
 
 def create_user_repository(user_data: UserCreateRequestSchema()):
@@ -37,14 +37,25 @@ def get_users_repository():
 
 def edit_user_repository(id_user, parameters):
     user = get_user_by_id_repository(id_user)  # calling the user
-    #TODO validate username and email is not in use
+
     for parameter in parameters:
-        #TODO validate parameters
-        user.__setattr__(parameter.get('attribute'), parameter.get('value'))
+
+        attribute = parameter.get('attribute')
+        value = parameter.get('value')
+        if attribute == 'username':
+            if UsersTable.query.filter_by(username=value).first():
+                abort(409, description="Username in use")
+        if attribute == 'email':
+            if UsersTable.query.filter_by(email=value).first():
+                abort(409, description="Email in use")
+
+        user.__setattr__(attribute, value)
         print(f'{parameter.get("attribute")} was requested to modified')
+
     db.session.merge(user)
     db.session.commit()
     return user
+
 
 def delete_user_repository(id_user):
     user = get_user_by_id_repository(id_user)  # calling the user
